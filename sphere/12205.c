@@ -54,12 +54,91 @@
 
 #include <stdio.h>
 
+typedef struct {
+    int x;
+    int y;
+} Point;
+
+void generate_point(Point *, Point *);
+
 int main() {
     int t;
-    scanf("%d", t);
-    int n[t];
+    scanf("%d", &t);
+    int n;
+    Point rectangle[t][2], lower_left_point, upper_right_point;
     for (int i = 0; i < t; i++) {
-        scanf("%d", n[i]);
+        scanf("%d", &n);
+        generate_point(&rectangle[i][0], &rectangle[i][1]);
+
+        for (int j = 1; j < n; j++) {
+            generate_point(&lower_left_point, &upper_right_point);
+            if (lower_left_point.x < rectangle[i][0].x) {
+                rectangle[i][0].x = lower_left_point.x;
+            }
+            if (lower_left_point.y < rectangle[i][0].y) {
+                rectangle[i][0].y = lower_left_point.y;
+            }
+            if (upper_right_point.x > rectangle[i][1].x) {
+                rectangle[i][0].x = upper_right_point.x;
+            }
+            if (upper_right_point.y > rectangle[i][1].y) {
+                rectangle[i][0].y = upper_right_point.y;
+            }
+        }
+    }
+
+    for (int i = 0; i < t; i++) {
+        printf("%d %d %d %d\n", rectangle[i][0].x, rectangle[i][0].y, rectangle[i][1].x, rectangle[i][1].y);
     }
     return 0;
+}
+
+void generate_point(Point * lower_left_point, Point * upper_right_point) {
+    char sharp;
+    scanf("\n%c\n", &sharp);
+    switch (sharp) {
+        case 'p':
+        {
+            int x, y;
+            scanf("%d %d", &x, &y);
+            (*lower_left_point).x = x;
+            (*lower_left_point).y = y;
+            (*upper_right_point).x = x;
+            (*upper_right_point).y = y;
+            break;
+        }
+        case 'c':
+        {
+            int x, y, r;
+            scanf("%d %d %d", &x, &y, &r);
+            (*lower_left_point).x = x - r;
+            (*lower_left_point).y = y - r;
+            (*upper_right_point).x = x + r;
+            (*upper_right_point).y = y + r;
+            break;
+        }
+        case 'l':
+        {
+            int x1, y1, x2, y2;
+            scanf("%d %d %d %d", &x1, &y1, &x2, &y2);
+            if (x1 < x2) {
+                (*lower_left_point).x = x1;
+                (*upper_right_point).x = x2;
+            }
+            else {
+                (*lower_left_point).x = x2;
+                (*upper_right_point).x = x1;
+            }
+
+            if (y1 < y2) {
+                (*lower_left_point).y = y1;
+                (*upper_right_point).y = y2;
+            }
+            else {
+                (*lower_left_point).y = y2;
+                (*upper_right_point).y = y1;
+            }
+            break;
+        }
+    }
 }
